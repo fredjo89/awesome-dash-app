@@ -1,0 +1,73 @@
+/* ------------------------------------------------------------------------------- */
+/* Colors  */
+/* ------------------------------------------------------------------------------- */
+:root {
+    --my-green-color: #228B22;
+    --my-black-color: #000000;
+    --my-gray-color: #c4caca;
+}
+
+/* ------------------------------------------------------------------------------- */
+/* Body  */
+/* ------------------------------------------------------------------------------- */
+body {
+    background-image: url('/assets/background.jpg');
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: 100vw 100vh;
+}
+
+
+/* ------------------------------------------------------------------------------- */
+/* Header  */
+/* ------------------------------------------------------------------------------- */
+.header {
+    text-align: center;
+    color: #ffffff;
+    font-family: 'Trajan Pro', 'Times New Roman', serif;
+    font-weight: bold;
+    border-bottom: 5px solid var(--my-green-color);
+    letter-spacing: 2px;
+    font-size: 4vh;
+    padding: 2vh;
+    border: 5px solid var(--my-green-color);
+}
+
+/* ------------------------------------------------------------------------------- */
+/* Dashboar section (menu + graph section)  */
+/* ------------------------------------------------------------------------------- */
+.dashboard_section {
+    height: 87vh;
+    display: flex;
+    flex-direction: row;
+}
+
+
+/* ------------------------------------------------------------------------------- */
+/* Menu Section  */
+/* ------------------------------------------------------------------------------- */
+.menu_section {
+    flex: 3;
+    border: 5px solid var(--my-gray-color);
+}
+
+/* ------------------------------------------------------------------------------- */
+/* Graph Section */
+/* ------------------------------------------------------------------------------- */
+.graph_section {
+    flex: 7;
+    border: 5px solid var(--my-black-color);
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* 
+style applied to all children of graph_section. To make the graph use all available space in graph_section
+*/
+.graph_section>* {
+    height: 100%;
+    width: 100%;
+}
