@@ -73,12 +73,12 @@ def create_visddc_network(dict_nodes, dict_edges):
             "shape": "circularImage",
             "size": _scale_node_size(node["screentime"]),
             "color": node_coloring[node["gender"]],
-            "title": f"Gender: {node['gender']} <br> Screentine: {node['screentime']}",
             "font": {
                 "size": "25",
                 "face": "'Trajan Pro', 'Times New Roman', serif",
                 "color": "#c4caca",
             },
+            "title": f"Gender: {node['gender']} <br> Screentine: {node['screentime']}",
         }
         for node in dict_nodes
     ]
