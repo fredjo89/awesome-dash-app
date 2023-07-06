@@ -15,9 +15,6 @@
     --color-Night-Watch: #14161B;
 }
 
-
-
-
 /* ------------------------------------------------------------------------------- */
 /* Body  */
 /* ------------------------------------------------------------------------------- */
@@ -48,16 +45,31 @@ body {
 /* ------------------------------------------------------------------------------- */
 /* Dashboar section (menu + graph section)  */
 /* ------------------------------------------------------------------------------- */
+
 .dashboard_section {
     height: 87vh;
     display: flex;
     flex-direction: row;
 }
 
-
 /* ------------------------------------------------------------------------------- */
 /* Menu Section  */
 /* ------------------------------------------------------------------------------- */
+
+.menu_header {
+    font-size: 3vh;
+    padding: 1vh;
+    border: None;
+}
+
+.field_description {
+    text-align: left;
+    color: var(--color-House-Martell);
+    font-size: 2vh;
+    padding: 1vh;
+    border: None;
+}
+
 .menu_section {
     flex: 3;
     border: 5px solid var(--my-gray-color);

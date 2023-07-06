@@ -1,5 +1,6 @@
 from dash import dcc, html
 import visdcc
+from data import get_options_for_dropdown
 
 ## ------------------------------------------------------------------------------- ##
 ## header  ##
@@ -15,8 +16,33 @@ header = html.Header(
 ## Menu Section  ##
 ## ------------------------------------------------------------------------------- ##
 
+menu_header = html.Div(
+    id="menu_header",
+    children="Search Menu",
+    className="header menu_header",
+)
+
+search_id_header = html.Div(
+    id="search_id_header",
+    children="Node ID",
+    className="header field_description",
+)
+
+search_id_bar = dcc.Dropdown(
+    id="search_id_bar",
+    options=get_options_for_dropdown(),
+    multi=False,
+    placeholder="Enter node ID here...",
+    className="field_description",
+)
+
+
 menu_section = html.Div(
-    children="Menu Section",
+    children=[
+        menu_header,
+        search_id_header,
+        search_id_bar,
+    ],
     className="menu_section",
 )
 

@@ -44,8 +44,8 @@ def _scale_edge_size(w):
     """
     w_min = df_edges["weight"].min()
     w_max = df_edges["weight"].max()
-    edge_width_min = 1 / 2
-    edge_width_max = 25
+    edge_width_min = 2
+    edge_width_max = 15
 
     slope = (edge_width_max - edge_width_min) / (w_max - w_min)
 
