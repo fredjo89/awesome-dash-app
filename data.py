@@ -62,29 +62,23 @@ def create_visddc_network(dict_nodes, dict_edges):
         graph_data = {"nodes": {}, "edges": {}}
         return graph_data
 
-    node_shape = "dot"
-
-    """
-        House Stark: #63748D (Dark Grey Blue)
-        House Lannister: #BA0C2F (Crimson Red)
-        House Targaryen: #9B111E (Dark Red)
-        House Baratheon: #3B3831 (Dark Brown)
-        House Greyjoy: #38444C (Slate Grey)
-        House Tyrell: #7CBA36 (Lime Green)
-        House Martell: #CC5500 (Burnt Orange)
-        Night's Watch: #14161B (Dark Charcoal)
-    """
-
-    node_coloring = {"male": "#63748D", "female": "#BA0C2F"}
+    node_coloring = {"male": "#7CBA36", "female": "#CC5500"}
+    icon_url = "https://e7.pngegg.com/pngimages/549/612/png-clipart-three-headed-dragon-illustration-daenerys-targaryen-tyrion-lannister-sansa-stark-house-targaryen-house-stark-throne-miscellaneous-dragon-thumbnail.png"
 
     nodes = [
         {
             "id": node["id"],
             "label": node["id"],
-            "shape": node_shape,
+            "image": icon_url,
+            "shape": "circularImage",
             "size": _scale_node_size(node["screentime"]),
             "color": node_coloring[node["gender"]],
             "title": f"Gender: {node['gender']} <br> Screentine: {node['screentime']}",
+            "font": {
+                "size": "25",
+                "face": "'Trajan Pro', 'Times New Roman', serif",
+                "color": "#c4caca",
+            },
         }
         for node in dict_nodes
     ]

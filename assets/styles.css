@@ -5,7 +5,18 @@
     --my-green-color: #228B22;
     --my-black-color: #000000;
     --my-gray-color: #c4caca;
+    --color-House-Stark: #63748D;
+    --color-House-Lannister: #BA0C2F;
+    --color-House-Targaryen: #9B111E;
+    --color-House-Baratheon: #3B3831;
+    --color-House-Greyjoy: #38444C;
+    --color-House-Tyrell: #7CBA36;
+    --color-House-Martell: #CC5500;
+    --color-Night-Watch: #14161B;
 }
+
+
+
 
 /* ------------------------------------------------------------------------------- */
 /* Body  */
@@ -18,7 +29,6 @@ body {
     -o-background-size: cover;
     background-size: 100vw 100vh;
 }
-
 
 /* ------------------------------------------------------------------------------- */
 /* Header  */
