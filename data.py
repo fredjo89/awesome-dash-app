@@ -21,13 +21,14 @@ def _load_got():
 
 df_nodes, df_edges = _load_got()
 
+def get_node_screentime_range(df_nodes = df_nodes):
+    return df_nodes["screentime"].min(), df_nodes["screentime"].max()
 
 def _scale_node_size(s):
     """
     We scale the nodes linearly in s (screentime) from node_size_min to node_size_max
     """
-    s_min = df_nodes["screentime"].min()
-    s_max = df_nodes["screentime"].max()
+    s_min, s_max = get_node_screentime_range()
     node_size_min = 5
     node_size_max = 50
 
@@ -37,13 +38,14 @@ def _scale_node_size(s):
 
     return node_size
 
+def get_edge_weight_range(df_edges = df_edges):
+    return df_edges["weight"].min(), df_edges["weight"].max()
 
 def _scale_edge_size(w):
     """
     We scale the edge widths linearly in w (weight) from edge_width_min to edge_width_max
     """
-    w_min = df_edges["weight"].min()
-    w_max = df_edges["weight"].max()
+    w_min, w_max  = get_edge_weight_range()
     edge_width_min = 2
     edge_width_max = 15
 
@@ -71,6 +73,7 @@ def create_visddc_network(dict_nodes, dict_edges):
             "label": node["id"],
             "image": icon_url,
             "shape": "circularImage",
+            "borderWidth": 5, 
             "size": _scale_node_size(node["screentime"]),
             "color": node_coloring[node["gender"]],
             "font": {
@@ -126,11 +129,20 @@ def _get_graph_union(graph_1, graph_2):
     Returns the union of nodes and edges of the two input-graphs
     """
     nodes = graph_1["nodes"] + graph_2["nodes"]
-    edges = graph_1["edges"] + graph_2["edges"]
-    nodes = [dict(t) for t in {tuple(d.items()) for d in nodes}]
-    edges = [dict(t) for t in {tuple(d.items()) for d in edges}]
-    graph_data = {"nodes": nodes, "edges": edges}
+    ids = {n["id"] for n in nodes}
+
+    mask = df_nodes["id"].isin(ids)
+    df_nodes_subset = df_nodes[mask]
+
+    mask = (df_edges["from"].isin(ids)) & (df_edges["to"].isin(ids))
+    df_edges_subset = df_edges[mask]
+
+    graph_data = create_visddc_network(
+        df_nodes_subset.to_dict("records"), df_edges_subset.to_dict("records")
+    )
+
     return graph_data
+
 
 
 def expand_subgraph_around_single_node(graph_data, expand_node_id):
@@ -143,3 +155,37 @@ def expand_subgraph_around_single_node(graph_data, expand_node_id):
 def get_options_for_dropdown():
     options = [{"label": i, "value": i} for i in df_nodes["id"]]
     return options
+
+
+def delete_node_from_graph(graph_data, node_name):
+    nodes = [n for n in graph_data["nodes"] if n["id"] != node_name]
+    edges = [e for e in graph_data["edges"] if e["from"]!= node_name and e["to"]!= node_name]
+    new_graph_data = {"nodes": nodes, "edges": edges}
+    return new_graph_data
+
+
+def my_super_awesome_filter(graph_data, filter_node_types, filter_node_screentime, filter_edge_weight):
+
+    ids = {n["id"] for n in graph_data["nodes"]}
+    mask = df_nodes["id"].isin(ids)
+    df_nodes_subset = df_nodes[mask]
+
+    if len(filter_node_types) > 0:
+        mask = df_nodes_subset["gender"].isin(filter_node_types)
+        df_nodes_subset = df_nodes_subset[mask]
+    if filter_node_screentime is not None:
+        mask = df_nodes_subset["screentime"] >= filter_node_screentime 
+        df_nodes_subset = df_nodes_subset[mask]
+
+    mask = (df_edges["from"].isin(df_nodes["id"])) & (df_edges["to"].isin(df_nodes["id"]))
+    df_edges_subset = df_edges[mask]
+
+    if filter_edge_weight is not None:
+        mask = df_edges_subset["weight"] >= filter_edge_weight 
+        df_edges_subset = df_edges_subset[mask]
+
+    filtered_graph_data = create_visddc_network(
+        df_nodes_subset.to_dict("records"), df_edges_subset.to_dict("records")
+    )
+
+    return filtered_graph_data
