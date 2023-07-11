@@ -1,10 +1,13 @@
-from dash import dcc, html
+from dash import dcc, html, dash_table
 import visdcc
-from data import get_options_for_dropdown
+from data import GraphData
 
-from data import get_edge_weight_range, get_node_screentime_range
-edge_weight_min, edge_weight_max  = get_edge_weight_range()
-node_screentime_min, node_screentime_max = get_node_screentime_range()
+data = GraphData()
+edge_weight_min = data.graph_whole.edge_weight_min
+edge_weight_max = data.graph_whole.edge_weight_max
+node_screentime_min = data.graph_whole.screentime_min
+node_screentime_max = data.graph_whole.screentime_max
+options_for_dropdown = data.get_options_for_dropdown()
 
 ## ------------------------------------------------------------------------------- ##
 ## header  ##
@@ -56,7 +59,7 @@ search_node_id_header = html.Div(
 
 search_node_id_input = dcc.Dropdown(
     id="search_node_id_input",
-    options=get_options_for_dropdown(),
+    options=options_for_dropdown,
     multi=False,
     placeholder="Enter node ID here...",
     className="header field_description",
@@ -95,6 +98,7 @@ filter_node_type_input = dcc.Dropdown(
     className="header field_description",
 )
 
+
 # filter_node_screentime
 filter_node_screentime_header = html.Div(
     id="filter_node_screentime_header",
@@ -103,12 +107,12 @@ filter_node_screentime_header = html.Div(
 )
 
 filter_node_screentime_input = dcc.Slider(
-        id="filter_node_screentime_input",
-        min = node_screentime_min, 
-        max = node_screentime_max, 
-        value=node_screentime_min,
-        className="header field_description",
-    )
+    id="filter_node_screentime_input",
+    min=node_screentime_min,
+    max=node_screentime_max,
+    value=node_screentime_min,
+    className="header field_description",
+)
 
 # filter_edge_weight
 filter_edge_weight_header = html.Div(
@@ -118,12 +122,12 @@ filter_edge_weight_header = html.Div(
 )
 
 filter_edge_weight_input = dcc.Slider(
-        id="filter_edge_weight_input",
-        min = edge_weight_min, 
-        max = edge_weight_max, 
-        value=edge_weight_min,
-        className="header field_description",
-    )
+    id="filter_edge_weight_input",
+    min=edge_weight_min,
+    max=edge_weight_max,
+    value=edge_weight_min,
+    className="header field_description",
+)
 
 # submit_button
 submit_button = html.Button(
@@ -147,27 +151,47 @@ search_result_output = html.Div(
     className="header field_description",
 )
 
+import pandas as pd
+
+df = pd.DataFrame(
+    {
+        "Name": ["John", "Alice", "Bob"],
+        "Age": [25, 30, 35],
+        "City": ["New York", "London", "Paris"],
+    }
+)
+graph_summary_table_table = html.Div(
+    children=[
+        html.Div(
+            dash_table.DataTable(
+                data=df.to_dict("records"),
+                columns=[{"name": i, "id": i} for i in df.columns],
+            ),
+        )
+    ]
+)
 
 menu_section = html.Div(
     children=[
-        graph_interaction_header, 
-        graph_interaction_input, 
+        graph_interaction_header,
+        graph_interaction_input,
         html.Hr(className="horizontal-line"),
         menu_header,
         search_node_id_header,
         search_node_id_input,
-        expand_num_hops_header, 
-        expand_num_hops_input, 
-        filter_node_type_header, 
-        filter_node_type_input, 
-        filter_node_screentime_header, 
-        filter_node_screentime_input, 
-        filter_edge_weight_header, 
-        filter_edge_weight_input, 
-        submit_button, 
+        expand_num_hops_header,
+        expand_num_hops_input,
+        filter_node_type_header,
+        filter_node_type_input,
+        filter_node_screentime_header,
+        filter_node_screentime_input,
+        filter_edge_weight_header,
+        filter_edge_weight_input,
+        submit_button,
         html.Hr(className="horizontal-line"),
-        search_result_header, 
-        search_result_output, 
+        search_result_header,
+        search_result_output,
+        # graph_summary_table_table,
     ],
     className="menu_section",
 )
@@ -196,7 +220,6 @@ graph_section = html.Div(
     ],
     className="graph_section",
 )
-
 
 
 ## ------------------------------------------------------------------------------- ##

@@ -1,11 +1,10 @@
 import dash
 from dash import html
 from dash.dependencies import Input, Output
-from data import (
-    delete_node_from_graph,
-    expand_subgraph_around_single_node,
-    get_subgraph_from_name,
-)
+
+from data import GraphFilterParams, DFGraph, GraphData
+
+data = GraphData()
 
 
 ######################################################################################
@@ -25,34 +24,6 @@ def resolve_clicked_node(clicked_node):
 ######################################################################################
 # callback_network_visualization
 ######################################################################################
-def update_graph_after_submit(graph_data, search_node_id, num_hops):
-    if search_node_id is None or num_hops is None:
-        return graph_data
-    else:
-        return get_subgraph_from_name(search_node_id, num_hops)
-
-
-######################################################################################
-from data import my_super_awesome_filter
-
-
-def filter_graph_data(
-    triggered_id,
-    graph_data,
-    filter_node_types,
-    filter_node_screentime,
-    filter_edge_weight,
-):
-    filtered_graph_data = graph_data
-
-    if triggered_id in ("submit_button", "network_visualization"):
-        filtered_graph_data = my_super_awesome_filter(
-            graph_data, filter_node_types, filter_node_screentime, filter_edge_weight
-        )
-
-    return filtered_graph_data
-
-
 def callback_network_visualization(app):
     @app.callback(
         Output(component_id="network_visualization", component_property="data"),
@@ -90,38 +61,65 @@ def callback_network_visualization(app):
 
         new_graph_data = graph_data
 
-        if triggered_id is None:
-            print("triggered_id is None. Nothing is supposed to happen")
-            return graph_data
-        elif triggered_id == "submit_button":
+        if triggered_id == "submit_button":
             print(
                 'triggered_id == "submit_button". Use the inputs to visualize the subgraph.'
             )
-            new_graph_data = update_graph_after_submit(
-                graph_data, search_node_id, num_hops
+
+            filter_params = GraphFilterParams(
+                filter_node_screentime,
+                filter_edge_weight,
+                filter_node_types,
             )
+
+            data.update_filter(filter_params)
+
+            data.create_display_graph_from_node_neighborhood(search_node_id, num_hops)
+            new_graph_data = data.create_visddc_network()
+
         elif triggered_id == "network_visualization":
             print('triggered_id == "network_visualization". Delete or expand node')
             if interaction_value == "expand_node":
                 print("YOLO2_1", interaction_value)
-                new_graph_data = expand_subgraph_around_single_node(
-                    graph_data, clicked_node
-                )
+
+                node_egonet = GraphData()
+                node_egonet.create_display_graph_from_node_neighborhood(clicked_node, 1)
+                data.add_subgraph_to_displaygraph(node_egonet.graph_display)
+
+                new_graph_data = data.create_visddc_network()
             elif interaction_value == "delete_node":
                 print("YOLO2_2", interaction_value)
-                new_graph_data = delete_node_from_graph(graph_data, clicked_node)
-            else:
-                return graph_data
+                data.delete_node_from_display_graph(clicked_node)
+                new_graph_data = data.create_visddc_network()
 
-        new_graph_data = filter_graph_data(
-            triggered_id,
-            new_graph_data,
-            filter_node_types,
-            filter_node_screentime,
-            filter_edge_weight,
-        )
+        print(data)
 
         return new_graph_data
+
+
+######################################################################################
+# callback_graph_summary_table
+######################################################################################
+def callback_graph_summary_table(app):
+    @app.callback(
+        Output(component_id="graph_summary_table_table", component_property="data"),
+        [
+            Input(component_id="graph_summary_table_table", component_property="data"),
+            # Input related to interactive network functionality
+            Input(component_id="submit_button", component_property="n_clicks"),
+        ],
+    )
+    def callback_graph_summary_table(
+        graph_summary_table,
+        n_clicks,
+    ):
+        triggered_id = dash.callback_context.triggered_id
+        if triggered_id != "submit_button":
+            return graph_summary_table
+
+        graph_summary_table = data.graph_display.graph_summary_table.to_dict("records")
+
+        return graph_summary_table
 
 
 ######################################################################################
@@ -168,4 +166,5 @@ def callback_open_url_on_node_click(app):
 ######################################################################################
 def register_callbacks(app):
     callback_network_visualization(app)
+    # callback_graph_summary_table(app)
     callback_open_url_on_node_click(app)
