@@ -20,6 +20,7 @@
 /* TOP LEVEL LAYOUT  */
 /* ------------------------------------------------------------------------------- */
 
+
 body {
     background-image: url('/assets/background3.jpg');
     background-repeat: no-repeat;
@@ -28,6 +29,7 @@ body {
     -o-background-size: cover;
     background-size: 100vw 100vh;
 }
+
 
 .header {
     text-align: center;
@@ -90,7 +92,7 @@ style applied to all children of graph_section. To make the graph use all availa
     font-weight: normal;
     text-align: left;
     letter-spacing: 1px;
-    /*color: var(--color-House-Lannister);*/
+    color: white;
     font-size: 1.5vh;
     padding: 0.5vh;
     padding-left: 1.5vh;
@@ -111,8 +113,9 @@ style applied to all children of graph_section. To make the graph use all availa
     margin-right: 5%;
 }
 
-
+/* ------------------------------------------------------------------------------- */
 /* Color of dropdown menu backround and text  */
+/* ------------------------------------------------------------------------------- */
 .Select-control {
     background-color: rgb(25, 25, 25) !important;
     color: white;
@@ -127,4 +130,56 @@ style applied to all children of graph_section. To make the graph use all availa
     color: white !important;
 }
 
+.VirtualizedSelectOption {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+.Select input {
+    color: white;
+    font-family: 'Trajan Pro', 'Times New Roman', serif;
+    letter-spacing: 2px;
+}
+
 /* ------------------------------------------------------------------------------- */
+/* CSS for part of input section that has two components: a dcc.Slider() and a dcc.Input() component  */
+/* ------------------------------------------------------------------------------- */
+.slider_input_section {
+    display: flex;
+    flex-direction: row;
+    padding: 0.5vh;
+    padding-left: 0.3vh;
+    padding-right: 1.6vh;
+}
+
+.slider_section {
+    width: 80%;
+}
+
+.input_section {
+    text-align: center;
+    color: rgb(25, 25, 25);
+    letter-spacing: 1px;
+    border-radius: 1vh;
+    width: 20%;
+}
+
+
+
+
+/* ------------------------------------------------------------------------------- */
+/* CSS for hiding the  number field control buttons (increment/decrement) number in html.Input() component. */
+/* url: https://community.plotly.com/t/hiding-number-field-control-buttons/15908 */
+/* ------------------------------------------------------------------------------- */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.table_section {
+    border-radius: 50vh;
+    font-weight: normal;
+    font-size: 16px;
+}

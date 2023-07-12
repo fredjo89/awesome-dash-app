@@ -1,4 +1,5 @@
 from dash import dcc, html, dash_table
+from dash.dash_table.Format import Format
 import visdcc
 from data import GraphData
 
@@ -39,7 +40,7 @@ graph_interaction_input = dcc.Dropdown(
         {"label": "None", "value": "none"},
     ],
     multi=False,
-    placeholder="Enter graph interaction here...",
+    value="expand_node",
     className="header field_description",
 )
 
@@ -106,13 +107,29 @@ filter_node_screentime_header = html.Div(
     className="header field_description",
 )
 
-filter_node_screentime_input = dcc.Slider(
-    id="filter_node_screentime_input",
-    min=node_screentime_min,
-    max=node_screentime_max,
-    value=node_screentime_min,
-    className="header field_description",
+filter_node_screentime_input = html.Div(
+    children=[
+        dcc.Slider(
+            id="filter_node_screentime_slider_input",
+            min=node_screentime_min,
+            max=node_screentime_max,
+            value=node_screentime_min,
+            className="slider_section",
+        ),
+        dcc.Input(
+            id="filter_node_screentime_input_input",
+            type="number",
+            inputMode="numeric",
+            debounce=True,
+            min=node_screentime_min,
+            max=node_screentime_max,
+            value=node_screentime_min,
+            className="input_section",
+        ),
+    ],
+    className="header field_description slider_input_section",
 )
+
 
 # filter_edge_weight
 filter_edge_weight_header = html.Div(
@@ -129,6 +146,31 @@ filter_edge_weight_input = dcc.Slider(
     className="header field_description",
 )
 
+
+filter_edge_weight_input = html.Div(
+    children=[
+        dcc.Slider(
+            id="filter_edge_weight_slider_input",
+            min=edge_weight_min,
+            max=edge_weight_max,
+            value=edge_weight_min,
+            className="slider_section",
+        ),
+        dcc.Input(
+            id="filter_edge_weight_input_input",
+            type="number",
+            inputMode="numeric",
+            debounce=True,
+            min=edge_weight_min,
+            max=edge_weight_max,
+            value=edge_weight_min,
+            className="input_section",
+        ),
+    ],
+    className="header field_description slider_input_section",
+)
+
+
 # submit_button
 submit_button = html.Button(
     id="submit_button",
@@ -141,36 +183,31 @@ submit_button = html.Button(
 # search_result
 search_result_header = html.Div(
     id="search_result_header",
-    children="Search Result",
+    children="Graph Statistics",
     className="header menu_header",
 )
 
-search_result_output = html.Div(
-    id="search_result_output",
-    children="Search Result....",
-    className="header field_description",
-)
+columns = [
+    dict(id="Field Description", name="Field Description"),
+    dict(id="Value", name="Value", type="numeric", format=Format()),
+]
 
-import pandas as pd
-
-df = pd.DataFrame(
-    {
-        "Name": ["John", "Alice", "Bob"],
-        "Age": [25, 30, 35],
-        "City": ["New York", "London", "Paris"],
-    }
-)
 graph_summary_table_table = html.Div(
     children=[
         html.Div(
             dash_table.DataTable(
-                data=df.to_dict("records"),
-                columns=[{"name": i, "id": i} for i in df.columns],
+                columns=columns,
+                id="graph_summary_table_table",
+                style_data={"color": "#FFFFFF", "backgroundColor": "#14161B"},
+                style_cell={"textAlign": "left", "backgroundColor": "#BA0C2F"},
             ),
         )
-    ]
+    ],
+    className="header field_description table_section",
 )
 
+## ------------------------------------------------------------------------------- ##
+# menu_section
 menu_section = html.Div(
     children=[
         graph_interaction_header,
@@ -190,8 +227,7 @@ menu_section = html.Div(
         submit_button,
         html.Hr(className="horizontal-line"),
         search_result_header,
-        search_result_output,
-        # graph_summary_table_table,
+        graph_summary_table_table,
     ],
     className="menu_section",
 )
@@ -208,7 +244,8 @@ network_component = visdcc.Network(
         physics={
             "enabled": True,
             # "solver": "barnesHut",
-            "solver": "repulsion",
+            # "solver": "repulsion",
+            "solver": "forceAtlas2Based",
         },
         interaction={"hover": True},
     ),

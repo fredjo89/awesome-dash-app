@@ -38,9 +38,13 @@ def callback_network_visualization(app):
             # Input related to network filtering
             Input(component_id="filter_node_type_input", component_property="value"),
             Input(
-                component_id="filter_node_screentime_input", component_property="value"
+                component_id="filter_node_screentime_input_input",
+                component_property="value",
             ),
-            Input(component_id="filter_edge_weight_input", component_property="value"),
+            Input(
+                component_id="filter_edge_weight_input_input",
+                component_property="value",
+            ),
             # Input related to the submit button
             Input(component_id="submit_button", component_property="n_clicks"),
         ],
@@ -59,42 +63,103 @@ def callback_network_visualization(app):
         triggered_id = dash.callback_context.triggered_id
         clicked_node = resolve_clicked_node(clicked_node)
 
-        new_graph_data = graph_data
-
-        if triggered_id == "submit_button":
-            print(
-                'triggered_id == "submit_button". Use the inputs to visualize the subgraph.'
-            )
-
+        if triggered_id not in ("submit_button", "network_visualization"):
+            return graph_data
+        elif triggered_id == "submit_button":
             filter_params = GraphFilterParams(
                 filter_node_screentime,
                 filter_edge_weight,
                 filter_node_types,
             )
-
             data.update_filter(filter_params)
-
             data.create_display_graph_from_node_neighborhood(search_node_id, num_hops)
-            new_graph_data = data.create_visddc_network()
-
         elif triggered_id == "network_visualization":
-            print('triggered_id == "network_visualization". Delete or expand node')
             if interaction_value == "expand_node":
-                print("YOLO2_1", interaction_value)
-
                 node_egonet = GraphData()
                 node_egonet.create_display_graph_from_node_neighborhood(clicked_node, 1)
                 data.add_subgraph_to_displaygraph(node_egonet.graph_display)
-
-                new_graph_data = data.create_visddc_network()
             elif interaction_value == "delete_node":
-                print("YOLO2_2", interaction_value)
                 data.delete_node_from_display_graph(clicked_node)
-                new_graph_data = data.create_visddc_network()
 
-        print(data)
+        return data.create_visddc_network()
 
-        return new_graph_data
+
+######################################################################################
+# callback_screentime_input
+######################################################################################
+def callback_screentime_input(app):
+    @app.callback(
+        [
+            Output(
+                component_id="filter_node_screentime_slider_input",
+                component_property="value",
+            ),
+            Output(
+                component_id="filter_node_screentime_input_input",
+                component_property="value",
+            ),
+        ],
+        [
+            Input(
+                component_id="filter_node_screentime_slider_input",
+                component_property="value",
+            ),
+            Input(
+                component_id="filter_node_screentime_input_input",
+                component_property="value",
+            ),
+        ],
+    )
+    def callback_screentime_input(
+        slider_value,
+        input_value,
+    ):
+        triggered_id = dash.callback_context.triggered_id
+        if triggered_id == "filter_node_screentime_slider_input":
+            return [slider_value, slider_value]
+        elif triggered_id == "filter_node_screentime_input_input":
+            return [input_value, input_value]
+        else:
+            return [slider_value, input_value]
+
+
+######################################################################################
+# callback_edge_weight_input
+######################################################################################
+def callback_edge_weight_input(app):
+    @app.callback(
+        [
+            Output(
+                component_id="filter_edge_weight_slider_input",
+                component_property="value",
+            ),
+            Output(
+                component_id="filter_edge_weight_input_input",
+                component_property="value",
+            ),
+        ],
+        [
+            Input(
+                component_id="filter_edge_weight_slider_input",
+                component_property="value",
+            ),
+            Input(
+                component_id="filter_edge_weight_input_input",
+                component_property="value",
+            ),
+        ],
+    )
+    def callback_edge_weight_input(
+        slider_value,
+        input_value,
+    ):
+        triggered_id = dash.callback_context.triggered_id
+        if triggered_id == "filter_edge_weight_slider_input":
+            return [slider_value, slider_value]
+        elif triggered_id == "filter_edge_weight_input_input":
+            return [input_value, input_value]
+        else:
+            return [slider_value, input_value]
 
 
 ######################################################################################
@@ -104,20 +169,13 @@ def callback_graph_summary_table(app):
     @app.callback(
         Output(component_id="graph_summary_table_table", component_property="data"),
         [
-            Input(component_id="graph_summary_table_table", component_property="data"),
-            # Input related to interactive network functionality
-            Input(component_id="submit_button", component_property="n_clicks"),
+            Input(component_id="network_visualization", component_property="data"),
         ],
     )
-    def callback_graph_summary_table(
-        graph_summary_table,
-        n_clicks,
-    ):
-        triggered_id = dash.callback_context.triggered_id
-        if triggered_id != "submit_button":
-            return graph_summary_table
-
+    def callback_graph_summary_table(_):
         graph_summary_table = data.graph_display.graph_summary_table.to_dict("records")
+
+        graph_summary_table = data.create_datatable_to_display()
 
         return graph_summary_table
 
@@ -166,5 +224,7 @@ def callback_open_url_on_node_click(app):
 ######################################################################################
 def register_callbacks(app):
     callback_network_visualization(app)
-    # callback_graph_summary_table(app)
+    callback_screentime_input(app)
+    callback_edge_weight_input(app)
+    callback_graph_summary_table(app)
     callback_open_url_on_node_click(app)

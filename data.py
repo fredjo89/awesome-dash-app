@@ -67,26 +67,9 @@ class DFGraph:
             self.edge_weight_min = 0
             self.edge_weight_max = 0
 
-    def update_graph(self, graph):
-        self.nodes = (
-            graph.nodes.drop_duplicates()
-            .sort_values(by="screentime", ascending=False)
-            .reset_index(drop=True)
-        )
-
-        self.edges = (
-            graph.edges.drop_duplicates()
-            .sort_values(by="weight", ascending=False)
-            .reset_index(drop=True)
-        )
-
-        self.screentime_min = self.nodes["screentime"].min()
-        self.screentime_max = self.nodes["screentime"].max()
-
-        self.edge_weight_min = self.edges["weight"].min()
-        self.edge_weight_max = self.edges["weight"].max()
-
-        self.create_graph_summary_table()
+            self.graph_summary_table = pd.DataFrame(
+                columns=["Field Description", "Value"]
+            )
 
     def get_node_size(self, screentime):
         """
@@ -117,6 +100,27 @@ class DFGraph:
         )
         edge_width = slope * (edge_weight - self.edge_weight_min) + edge_width_min
         return edge_width
+
+    def update_graph(self, graph):
+        self.nodes = (
+            graph.nodes.drop_duplicates()
+            .sort_values(by="screentime", ascending=False)
+            .reset_index(drop=True)
+        )
+
+        self.edges = (
+            graph.edges.drop_duplicates()
+            .sort_values(by="weight", ascending=False)
+            .reset_index(drop=True)
+        )
+
+        self.screentime_min = self.nodes["screentime"].min()
+        self.screentime_max = self.nodes["screentime"].max()
+
+        self.edge_weight_min = self.edges["weight"].min()
+        self.edge_weight_max = self.edges["weight"].max()
+
+        self.create_graph_summary_table()
 
     def append_graph(self, input_graph):
         """
@@ -153,21 +157,32 @@ class DFGraph:
 
         return DFGraph(nodes, edges)
 
-    def filter_graph(self, filter_params: GraphFilterParams):
-        # Filter nodes based on screentime
-        mask = self.nodes["screentime"] >= filter_params.min_screentime
-        self.nodes = self.nodes[mask]
-        # Filter nodes based on gender
-        mask = self.nodes["gender"].isin(filter_params.node_types_to_include)
-        self.nodes = self.nodes[mask]
-        # Filter edges based on removed nodes
-        mask = self.edges["from"].isin(self.nodes["id"]) | self.edges["to"].isin(
+    def _remove_edges_with_invalid_node_ids(self):
+        # Filter edges to retain only those with valid 'from' and 'to' node IDs
+        # This happens when nodes are filtered out, and promts the need to remove edges that are no longer valid.
+        mask = self.edges["from"].isin(self.nodes["id"]) & self.edges["to"].isin(
             self.nodes["id"]
         )
         self.edges = self.edges[mask]
-        # Filter edges based on weight
-        mask = self.edges["weight"] >= filter_params.min_edge_weight
+
+    def _filter_edges_using_weight(self, min_edge_weight):
+        mask = self.edges["weight"] >= min_edge_weight
         self.edges = self.edges[mask]
+
+    def _filter_nodes_using_screentime(self, min_screentime):
+        mask = self.nodes["screentime"] >= min_screentime
+        self.nodes = self.nodes[mask]
+        self._remove_edges_with_invalid_node_ids()
+
+    def _filter_nodes_using_node_types(self, node_types_to_include):
+        mask = self.nodes["gender"].isin(node_types_to_include)
+        self.nodes = self.nodes[mask]
+        self._remove_edges_with_invalid_node_ids()
+
+    def filter_graph(self, filter_params: GraphFilterParams):
+        self._filter_nodes_using_screentime(filter_params.min_screentime)
+        self._filter_nodes_using_node_types(filter_params.node_types_to_include)
+        self._filter_edges_using_weight(filter_params.min_edge_weight)
 
         self.update_graph(self)
 
@@ -262,13 +277,19 @@ class GraphData:
     def update_filter(self, new_params: GraphFilterParams):
         if new_params.min_screentime is not None:
             self.filter_params.min_screentime = new_params.min_screentime
+
         if new_params.min_edge_weight is not None:
             self.filter_params.min_edge_weight = new_params.min_edge_weight
-        if (
-            new_params.node_types_to_include is not None
-            and len(new_params.node_types_to_include) > 0
-        ):
-            self.filter_params.node_types_to_include = new_params.node_types_to_include
+
+        if new_params.node_types_to_include is not None:
+            if len(new_params.node_types_to_include) > 0:
+                self.filter_params.node_types_to_include = (
+                    new_params.node_types_to_include
+                )
+            else:
+                self.filter_params.node_types_to_include = (
+                    self.graph_whole.nodes["gender"].drop_duplicates().to_list()
+                )
 
         self.graph_filtered = copy(self.graph_whole)
         self.graph_filtered.filter_graph(self.filter_params)
@@ -342,15 +363,35 @@ class GraphData:
     def delete_node_from_display_graph(self, node_id):
         self.graph_display.delete_node_from_graph(node_id)
 
+    def create_datatable_to_display(self):
+        """
+        self.create_display_graph_from_node_neighborhood(
+            node_id="Brandon-Stark", n_hops=1
+        )
+        """
+
+        data_to_display = self.graph_display.graph_summary_table
+
+        fields_to_display = [
+            "Number of nodes",
+            "Number of edges",
+            "screentime_sum",
+            "screentime_median",
+            "weight_sum",
+            "weight_median",
+        ]
+        mask = data_to_display["Field Description"].isin(fields_to_display)
+
+        data_to_display = data_to_display[mask]
+        data_to_display = data_to_display.to_dict("records")
+
+        return data_to_display
+
 
 def demo():
     data = GraphData()
 
-    data.create_display_graph_from_node_neighborhood(node_id="Brandon-Stark", n_hops=1)
-
-    print(data)
-
-    # display(data.graph_display.graph_summary_table)
+    data.create_datatable_to_display()
 
 
 # demo()
