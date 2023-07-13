@@ -1,33 +1,21 @@
 import dash
-import dash_html_components as html
-import dash_table
-import pandas as pd
+from dash import html
 
-# Sample DataFrame
-df = pd.DataFrame(
-    {
-        "Name": ["John", "Alice", "Bob"],
-        "Age": [25, 30, 35],
-        "City": ["New York", "London", "Paris"],
-    }
-)
 
 # Create the Dash app
-app = dash.Dash(__name__, external_stylesheets=["styles.css"])
+app = dash.Dash(__name__)
 
 # Define the layout
 app.layout = html.Div(
     [
         html.Div(
-            className="my-datatable",
-            children=[
-                dash_table.DataTable(
-                    data=df.to_dict("records"),
-                    columns=None,
-                    # columns=[{"name": i, "id": i} for i in df.columns],
-                )
-            ],
-        )
+            className="fredrik",
+            children="Hello Header!",
+        ),
+        html.Div(
+            className="kropp",
+            children="Hello Body!",
+        ),
     ]
 )
 
