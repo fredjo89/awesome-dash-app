@@ -87,7 +87,7 @@ def callback_network_visualization(app):
 ######################################################################################
 # callback_screentime_input
 ######################################################################################
-def callback_screentime_input(app):
+def callback_sync_screentime_input(app):
     @app.callback(
         [
             Output(
@@ -126,7 +126,7 @@ def callback_screentime_input(app):
 ######################################################################################
 # callback_edge_weight_input
 ######################################################################################
-def callback_edge_weight_input(app):
+def callback_sync_edge_weight_input(app):
     @app.callback(
         [
             Output(
@@ -224,7 +224,7 @@ def callback_open_url_on_node_click(app):
 ######################################################################################
 def register_callbacks(app):
     callback_network_visualization(app)
-    callback_screentime_input(app)
-    callback_edge_weight_input(app)
+    callback_sync_screentime_input(app)
+    callback_sync_edge_weight_input(app)
     callback_graph_summary_table(app)
     callback_open_url_on_node_click(app)

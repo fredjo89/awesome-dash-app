@@ -198,8 +198,8 @@ graph_summary_table_table = html.Div(
             dash_table.DataTable(
                 columns=columns,
                 id="graph_summary_table_table",
-                style_data={"color": "#FFFFFF", "backgroundColor": "#14161B"},
                 style_cell={"textAlign": "left", "backgroundColor": "#BA0C2F"},
+                style_data={"color": "#FFFFFF", "backgroundColor": "#14161B"},
             ),
         )
     ],
@@ -236,6 +236,7 @@ menu_section = html.Div(
 ## ------------------------------------------------------------------------------- ##
 ## Graph Section  ##
 ## ------------------------------------------------------------------------------- ##
+
 
 network_component = visdcc.Network(
     id="network_visualization",

@@ -22,7 +22,7 @@
 
 
 body {
-    background-image: url('/assets/background3.jpg');
+    background-image: url('/assets/background.jpg');
     background-repeat: no-repeat;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -46,6 +46,7 @@ body {
     height: 87vh;
     display: flex;
     flex-direction: row;
+    overflow: auto;
 }
 
 .menu_section {
@@ -53,6 +54,7 @@ body {
     border: 0.5vh solid var(--my-white-color);
     background-color: var(--color-House-Greyjoy);
     margin: 2vh;
+    overflow: auto;
 }
 
 .graph_section {
@@ -164,7 +166,13 @@ style applied to all children of graph_section. To make the graph use all availa
     width: 20%;
 }
 
-
+/* ------------------------------------------------------------------------------- */
+/* CSS DataTable  */
+/* ------------------------------------------------------------------------------- */
+.table_section {
+    font-weight: normal;
+    font-size: 1.3vh;
+}
 
 
 /* ------------------------------------------------------------------------------- */
@@ -175,11 +183,4 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
-
-
-.table_section {
-    border-radius: 50vh;
-    font-weight: normal;
-    font-size: 16px;
 }

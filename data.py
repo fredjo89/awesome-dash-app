@@ -1,26 +1,29 @@
-# %%
-
 import pandas as pd
 import os
 from dataclasses import dataclass
 from copy import copy
 
+DATA_PATH = os.path.join(os.getcwd(), "data")
+NODE_PATH = os.path.join(DATA_PATH, "got_nodes.csv")
+EDGE_PATH = os.path.join(DATA_PATH, "got_edges.csv")
+FILE_PATH_FOR_IMAGES = "assets/portrait_images"
 
-def _load_got():
+
+def load_got():
     """
     Load the data into pandas dataframes
     """
 
-    data_directory = os.path.join(os.getcwd(), "data")
+    nodes = pd.read_csv(NODE_PATH)
+    edges = pd.read_csv(EDGE_PATH)
 
-    df_nodes = pd.read_csv(os.path.join(data_directory, "got_nodes.csv"))
-    df_edges = pd.read_csv(os.path.join(data_directory, "got_edges.csv"))
+    nodes = nodes.sort_values(by=["screentime"], ascending=False)
+    edges = edges.sort_values(by=["weight"], ascending=False)
 
-    df_nodes = df_nodes.drop(columns=["node_image_url"])
-    df_nodes = df_nodes.sort_values(by=["screentime"], ascending=False)
-    df_edges = df_edges.sort_values(by=["weight"], ascending=False)
+    return nodes, edges
 
-    return df_nodes, df_edges
+
+nodes, edges = load_got()
 
 
 ######################################################################################
@@ -75,7 +78,7 @@ class DFGraph:
         """
         We scale the nodes linearly in s (screentime) from node_size_min to node_size_max
         """
-        node_size_min = 5
+        node_size_min = 20
         node_size_max = 50
         slope = _calculate_slope(
             self.screentime_min,
@@ -242,7 +245,6 @@ class DFGraph:
         )
 
 
-# %%
 ######################################################################################
 # class GraphData:
 ######################################################################################
@@ -255,7 +257,7 @@ class GraphData:
     filter_params: GraphFilterParams
 
     def __init__(self):
-        nodes, edges = _load_got()
+        nodes, edges = load_got()
         self.graph_whole = DFGraph(nodes, edges)
         self.graph_filtered = DFGraph(nodes, edges)
         self.graph_display = DFGraph()
@@ -324,24 +326,32 @@ class GraphData:
         dict_nodes = self.graph_display.nodes.to_dict("records")
         dict_edges = self.graph_display.edges.to_dict("records")
 
-        node_coloring = {"male": "#7CBA36", "female": "#CC5500"}
-        icon_url = "https://e7.pngegg.com/pngimages/549/612/png-clipart-three-headed-dragon-illustration-daenerys-targaryen-tyrion-lannister-sansa-stark-house-targaryen-house-stark-throne-miscellaneous-dragon-thumbnail.png"
+        node_coloring = {"male": "#63748D", "female": "#CC5500"}
+
+        def create_portrait_image_path(node):
+            image_path = os.path.join(FILE_PATH_FOR_IMAGES, f"{node['id']}.png")
+
+            if os.path.exists(image_path):
+                return image_path
+            else:
+                return "https://e7.pngegg.com/pngimages/549/612/png-clipart-three-headed-dragon-illustration-daenerys-targaryen-tyrion-lannister-sansa-stark-house-targaryen-house-stark-throne-miscellaneous-dragon-thumbnail.png"
 
         nodes = [
             {
                 "id": node["id"],
-                "label": node["id"],
-                "image": icon_url,
+                "label": None,
+                "image": create_portrait_image_path(node),
                 "shape": "circularImage",
-                "borderWidth": 5,
+                "imagePadding": {"left": 200, "top": 100, "right": 80, "bottom": 20},
+                "borderWidth": 10,
                 "size": self.graph_whole.get_node_size(node["screentime"]),
                 "color": node_coloring[node["gender"]],
                 "font": {
-                    "size": "25",
-                    "face": "'Trajan Pro', 'Times New Roman', serif",
-                    "color": "#c4caca",
+                    "size": "20",
+                    "face": "'Trajan Pro'",
+                    "color": "white",
                 },
-                "title": f"Gender: {node['gender']} <br> Screentine: {node['screentime']}",
+                "title": f"""Name: {node["id"].replace("-", " ")} <br> Gender: {node['gender']} <br> Screentine: {node['screentime']}""",
             }
             for node in dict_nodes
         ]
@@ -388,10 +398,8 @@ class GraphData:
         return data_to_display
 
 
+# %%
+
+
 def demo():
-    data = GraphData()
-
-    data.create_datatable_to_display()
-
-
-# demo()
+    return None
