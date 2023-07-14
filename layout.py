@@ -245,8 +245,8 @@ network_component = visdcc.Network(
         physics={
             "enabled": True,
             # "solver": "barnesHut",
-            # "solver": "repulsion",
-            "solver": "forceAtlas2Based",
+            "solver": "repulsion",
+            # "solver": "forceAtlas2Based",
         },
         interaction={"hover": True},
     ),
