@@ -1,35 +1,100 @@
 # awesome-dash-app
 
-This repository contains code that creates a webpage with a dashboard for a game of thrones character network. 
-Core functionality of the dashboard is to allow the user to search and filter in the graph, e.g. 
-- Search for a character and its closest neighborhood
-- Filter characters based on its screentime
-- Filter edges/relations based on its strength
+This repository was developed as an exploration into the capabilities of `dash` and `visdcc`, aimed at creating an interactive network visualization application. It contains code for a webpage with an interactive dashboard for a Game of Thrones character network, where it provides functionality to explore and analyze the connections between characters from the famous series.
 
-The network visualization is interactive, and delete or expand a node's neighborhood by clicking on it. 
-The user can also choose to open a character's wiki webpage by clicking on the node. 
+## Features 
 
-The dashboard is created using dash and visdcc as core components, where dash is used to create the web application and visdcc to create the network visualization. 
-The creation of the dashboard was highly inspored by [jaal](https://github.com/imohitmayank/jaal)
+The dashboard has the following functionalities:
+- **Character Search**: Enables a user to search for a specific character and viewits `n`-hop neighborhood, where `n` is chosen by the user. 
+- **Screentime Filter**: Allows users to filter characters based on their screentime.
+- **Edge/Relations Filter**: Provides the capability to filter relations or 'edges' based on their strength.
 
-## Installation
+## Interactivity
+A user can modify the network by deleting or expanding a node's neighborhood through a node. 
+It also provides the capability of opening a character's wiki webpage when the corresponding node is clicked. 
 
-## File Structure
+## Technology Stack
 
-- `app.py`
-    - Runs the app
-    - Depends on ?? and ??
-- `layout.py`
-    - Defines the layout of the dashboard
-    - Depends on 
-- `callbacks.py`
-    - Defines the user interactions, i.e. the callback functions used by the dashboard. 
-- `data.py`
-    - Loads the data and defines all operations on the data that is the backend for the data shown on the dashboard
-- The `data`- folder
-    - Contains the raw data for the network in two csv-files; one that holds the nodes and one the edges. 
-- The `assets`- folder
-    - Holds all images used by the dashboard, in additon to the file `styles-css` used to define the styles of the different components of the dashboard. 
-- `download_portraits.py`
-    - A python-script that downloads and crops potrait-images of the characters in the network. These images are used in the network visualization. The result of running this script is all the images in `assets/portrait_images`, and it's not neccecary to run it unless these images for some reason disapear or require modification. 
+The core components of the dashboard are [`jupyter_dash`](https://github.com/plotly/jupyter-dash) and [`visdcc`](https://github.com/jimmybow/visdcc). `jupyter_dash` is employed for the creation of the web application, while `visdcc` is used for the interactive network visualization.
 
+The design and development of this dashboard were heavily inspired by [jaal](https://github.com/imohitmayank/jaal).
+
+## Installation and Usage
+
+To install and run the `awesome-dash-app`, follow the steps below. This guide assumes you're working in a Unix-like environment (like Linux or macOS). For Windows, the commands might slightly differ.
+
+### Pre-requisites
+
+- Python 3.x
+- pip (Python package installer)
+- A terminal
+
+### Steps
+
+1. **Clone the repository**
+
+    Clone this repository to your local machine. Open your terminal and navigate to the location where you want the project to reside, then run the following command:
+    ```
+    git clone https://github.com/fredjo89/dash-app-playground.git
+    ```
+    Change into the project's root directory:
+    ```
+    cd awesome-dash-app
+    ```
+
+2. **Set up a virtual environment**
+
+    Creating a virtual environment is recommended as it isolates the dependencies of this project from your global Python environment. Use the following command to create a new virtual environment named `my_venv`:
+    ```bash
+    python3 -m venv my_venv
+    ```
+
+3. **Activate the virtual environment**
+
+    Before installing the project dependencies, activate the virtual environment with this command:
+    ```bash
+    source my_venv/bin/activate
+    ```
+    Your command prompt should now be prefixed with `(my_venv)`, indicating that you're working inside the virtual environment.
+
+4. **Install dependencies**
+
+    With the virtual environment activated, install the necessary dependencies using pip. This project includes a `requirements.txt` file that contains a list of all required Python packages. Install them using the following command:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. **Run the application**
+
+    Now that all dependencies are installed, you can start the application using Python 3:
+    ```bash
+    python3 app.py
+    ```
+    The terminal will output an IP address once the application starts running.
+
+6. **Access the application**
+
+    Access the application by Command + left-clicking the IP address that was printed in the terminal. The application should open in your default web browser.
+
+### Exiting the Application
+
+To exit the application, return to the terminal and press `CTRL + C`. To deactivate the virtual environment, simply type `deactivate` and press `Enter`.
+
+
+## Project Structure
+
+Here's a brief overview of the main files and directories in this repository:
+
+- `app.py`: The primary script that launches the application. It is dependent on `layout.py` and `callbacks.py`.
+
+- `layout.py`: This script is responsible for defining the layout of the dashboard. It is dependent on `data.py`.
+
+- `callbacks.py`: This file manages user interactions by defining callback functions for the dashboard. These functions provide dynamic responses to user inputs such as clicks or selections. It also depends on `data.py`.
+
+- `data.py`: This module is the data back-end of the application. It loads raw data and executes all data operations to process and transform the data, feeding it to the front-end of the dashboard.
+
+- `data/`: This directory holds the raw data files for the character network. The data is stored in two separate CSV files: one containing node information, and the other detailing the edges or connections between nodes.
+
+- `assets/`: This directory is a storage for the images used in the dashboard, in addition to a `styles.css` file that defines the styles of the different components of the dashboard. 
+
+- `download_portraits.py`: This utility script is used to download and process portrait images of the characters in the network. The output of this script populates the `assets/portrait_images` directory. While not essential to run in routine operations, it's necessary if the existing images disappear or modifications are required.

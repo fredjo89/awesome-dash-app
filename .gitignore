@@ -162,3 +162,5 @@ cython_debug/
 
 # My own stuff
 99_dev.*
+test_venv*
+my_venv
