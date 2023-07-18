@@ -14,6 +14,3 @@ def load_got():
     edges = edges.sort_values(by=["weight"], ascending=False)
 
     return nodes, edges
-
-
-nodes, edges = load_got()

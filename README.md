@@ -91,14 +91,20 @@ Here's a brief overview of the main files and directories in this repository:
 
 - `app.py`: The primary script that launches the application. It is dependent on `layout.py` and `callbacks.py`.
 
-- `layout.py`: This script is responsible for defining the layout of the dashboard. It is dependent on `data.py`.
+- `layout.py`: This script is responsible for defining the layout of the dashboard. It is dependent on `GraphData`.
 
-- `callbacks.py`: This file manages user interactions by defining callback functions for the dashboard. These functions provide dynamic responses to user inputs such as clicks or selections. It also depends on `data.py`.
+- `callbacks.py`: This file manages user interactions by defining callback functions for the dashboard. These functions provide dynamic responses to user inputs such as clicks or selections. It also depends on `data/utils.py` and `GraphData`.
 
-- `data.py`: This module is the data back-end of the application. It loads raw data and executes all data operations to process and transform the data, feeding it to the front-end of the dashboard.
-
-- `data/`: This directory holds the raw data files for the character network. The data is stored in two separate CSV files: one containing node information, and the other detailing the edges or connections between nodes.
+- `data/:`
+This directory holds the data and the data-related back-end of the application. It loads raw data and executes all data operations to process and transform the data, feeding it to the front-end of the dashboard.
+    - `raw_data`: This directory holds the raw data files for the character network. The data is stored in two separate CSV files: one containing node information, and the other detailing the edges or connections between nodes.
+    - `graphdata.py`: Defines the class `GraphData` created to hold all data related to the dashboard. Depends on `dfgraph.py`, `load_data.py` and `utils.py`
+    - `dfgraph.py`: Defines the class `DFGraph` created to hold a graph, which is the core component of `GraphData`. Depends on `utils.py`
+    - `load_data.py`: This file contains the function that loads the data. 
+    - `utils.py`: Defines some utility function used in other scripts in this folder.
 
 - `assets/`: This directory is a storage for the images used in the dashboard, in addition to a `styles.css` file that defines the styles of the different components of the dashboard. 
 
 - `download_portraits.py`: This utility script is used to download and process portrait images of the characters in the network. The output of this script populates the `assets/portrait_images` directory. While not essential to run in routine operations, it's necessary if the existing images disappear or modifications are required.
+
+- `config.py`: This file defines the file paths which are used in other .py files. 
