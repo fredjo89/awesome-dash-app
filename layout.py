@@ -191,6 +191,7 @@ graph_summary_table_table = html.Div(
 )
 
 # menu_section
+# Putting together all elements that make up the menu (graph interaction mode / search menu / graph statistics)
 menu_section = html.Div(
     children=[
         graph_interaction_header,
@@ -242,6 +243,7 @@ graph_section = html.Div(
 ## ------------------------------------------------------------------------------- ##
 ## Dashboard Section  ##
 ## ------------------------------------------------------------------------------- ##
+# Putting together the menu section and the graph section
 dashboard_section = html.Div(
     id="dashboard",
     children=[
@@ -254,6 +256,7 @@ dashboard_section = html.Div(
 ## ------------------------------------------------------------------------------- ##
 ## Layout  ##
 ## ------------------------------------------------------------------------------- ##
+# Putting together the final layout
 layout = html.Div(
     children=[
         header,
