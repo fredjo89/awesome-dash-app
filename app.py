@@ -4,7 +4,7 @@ import callbacks
 
 # external CSS stylesheets
 external_stylesheets = [
-    "https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.css",  # This stylesheet is needed to display node info on mouse hover
 ]
 
 # Run the app

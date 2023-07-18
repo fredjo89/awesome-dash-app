@@ -2,19 +2,13 @@
 /* Colors  */
 /* ------------------------------------------------------------------------------- */
 :root {
-    --my-black-color: #000000;
-    --my-gray-color: #c4caca;
-    --my-white-color: #ffffff;
-    --color-House-Stark: #63748D;
-    --color-House-Lannister: #BA0C2F;
-    --color-House-Targaryen: #9B111E;
-    --color-House-Baratheon: #3B3831;
-    --color-House-Greyjoy: #38444C;
-    --color-House-Tyrell: #7CBA36;
-    --color-House-Martell: #CC5500;
-    --color-Night-Watch: #14161B;
+    --zinnwaldite_brown: #331C0E;
+    --organ: #67331E;
+    --alloy_orange: #B9540C;
+    --flavescent: #FFF190;
+    --ivory: #FCFEF0;
+    --deer: #C38D5F;
 }
-
 
 /* ------------------------------------------------------------------------------- */
 /* TOP LEVEL LAYOUT  */
@@ -33,10 +27,10 @@ body {
 
 .header {
     text-align: center;
-    color: var(--my-white-color);
+    color: var(--ivory);
     font-family: 'Trajan Pro', 'Times New Roman', serif;
     font-weight: bold;
-    border-bottom: 5px solid var(--my-white-color);
+    border-bottom: 5px solid var(--ivory);
     letter-spacing: 2px;
     font-size: 4vh;
     padding: 2vh;
@@ -51,8 +45,8 @@ body {
 
 .menu_section {
     flex: 25;
-    border: 0.5vh solid var(--my-white-color);
-    background-color: var(--color-House-Greyjoy);
+    border: 0.5vh solid var(--ivory);
+    background-color: var(--zinnwaldite_brown);
     margin: 2vh;
     overflow: auto;
 }
@@ -76,7 +70,7 @@ style applied to all children of graph_section. To make the graph use all availa
 /* Mics  */
 /* ------------------------------------------------------------------------------- */
 .horizontal-line {
-    border-top: 0.5vh solid var(--my-white-color);
+    border-top: 0.5vh solid var(--ivory);
 }
 
 
@@ -94,7 +88,7 @@ style applied to all children of graph_section. To make the graph use all availa
     font-weight: normal;
     text-align: left;
     letter-spacing: 1px;
-    color: white;
+    color: --var(--ivory);
     font-size: 1.5vh;
     padding: 0.5vh;
     padding-left: 1.5vh;
@@ -102,9 +96,8 @@ style applied to all children of graph_section. To make the graph use all availa
     border: None;
 }
 
-
 .submit_button {
-    background-color: var(--color-House-Lannister);
+    background-color: var(--alloy_orange);
     display: inline-block;
     cursor: pointer;
     border-radius: 100vh;
@@ -119,26 +112,26 @@ style applied to all children of graph_section. To make the graph use all availa
 /* Color of dropdown menu backround and text  */
 /* ------------------------------------------------------------------------------- */
 .Select-control {
-    background-color: rgb(25, 25, 25) !important;
-    color: white;
+    background-color: black !important;
+    color: var(--ivory);
 }
 
 .Select-menu-outer {
-    background-color: rgb(25, 25, 25);
-    color: white;
+    background-color: black;
+    color: var(--ivory);
 }
 
 .Select-value-label {
-    color: white !important;
+    color: var(--ivory) !important;
 }
 
 .VirtualizedSelectOption {
-    background-color: rgb(25, 25, 25);
-    color: white;
+    background-color: black;
+    color: var(--ivory);
 }
 
 .Select input {
-    color: white;
+    color: var(--ivory);
     font-family: 'Trajan Pro', 'Times New Roman', serif;
     letter-spacing: 2px;
 }

@@ -1,15 +1,13 @@
+# %%
 import dash
 from dash import html
 from dash.dependencies import Input, Output
-
-from data import GraphFilterParams, DFGraph, GraphData
+from data.graphdata import GraphData
+from data.utils import GraphFilterParams
 
 data = GraphData()
 
 
-######################################################################################
-# Helper functions
-######################################################################################
 def resolve_clicked_node(clicked_node):
     if (
         clicked_node is not None
@@ -21,9 +19,25 @@ def resolve_clicked_node(clicked_node):
         return None
 
 
-######################################################################################
-# callback_network_visualization
-######################################################################################
+def create_url_from_node_name(node_name):
+    node_name = node_name.replace("-", "_")
+    url = f"""https://gameofthrones.fandom.com/wiki/{node_name}"""
+    return url
+
+
+def create_javascript_for_character_url(triggered_id, interaction_value, clicked_node):
+    javascript = ""
+    node_name = resolve_clicked_node(clicked_node)
+    if (
+        triggered_id == "network_visualization"
+        and interaction_value == "node_wiki"
+        and node_name is not None
+    ):
+        url = create_url_from_node_name(node_name)
+        javascript = f"""window.open('{url}')"""
+    return javascript
+
+
 def callback_network_visualization(app):
     @app.callback(
         Output(component_id="network_visualization", component_property="data"),
@@ -84,9 +98,6 @@ def callback_network_visualization(app):
         return data.create_visddc_network()
 
 
-######################################################################################
-# callback_screentime_input
-######################################################################################
 def callback_sync_screentime_input(app):
     @app.callback(
         [
@@ -123,9 +134,6 @@ def callback_sync_screentime_input(app):
             return [slider_value, input_value]
 
 
-######################################################################################
-# callback_edge_weight_input
-######################################################################################
 def callback_sync_edge_weight_input(app):
     @app.callback(
         [
@@ -162,9 +170,6 @@ def callback_sync_edge_weight_input(app):
             return [slider_value, input_value]
 
 
-######################################################################################
-# callback_graph_summary_table
-######################################################################################
 def callback_graph_summary_table(app):
     @app.callback(
         Output(component_id="graph_summary_table_table", component_property="data"),
@@ -178,28 +183,6 @@ def callback_graph_summary_table(app):
         graph_summary_table = data.create_datatable_to_display()
 
         return graph_summary_table
-
-
-######################################################################################
-# callback_open_url_on_node_click
-######################################################################################
-def _create_url_from_node_name(node_name):
-    node_name = node_name.replace("-", "_")
-    url = f"""https://gameofthrones.fandom.com/wiki/{node_name}"""
-    return url
-
-
-def get_javascript(triggered_id, interaction_value, clicked_node):
-    javascript = ""
-    node_name = resolve_clicked_node(clicked_node)
-    if (
-        triggered_id == "network_visualization"
-        and interaction_value == "node_wiki"
-        and node_name is not None
-    ):
-        url = _create_url_from_node_name(node_name)
-        javascript = f"""window.open('{url}')"""
-    return javascript
 
 
 def callback_open_url_on_node_click(app):
@@ -216,12 +199,11 @@ def callback_open_url_on_node_click(app):
         interaction_value,
     ):
         triggered_id = dash.callback_context.triggered_id
-        return get_javascript(triggered_id, interaction_value, clicked_node)
+        return create_javascript_for_character_url(
+            triggered_id, interaction_value, clicked_node
+        )
 
 
-######################################################################################
-# register_callbacks()
-######################################################################################
 def register_callbacks(app):
     callback_network_visualization(app)
     callback_sync_screentime_input(app)

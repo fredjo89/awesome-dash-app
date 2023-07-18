@@ -1,8 +1,9 @@
 from dash import dcc, html, dash_table
 from dash.dash_table.Format import Format
 import visdcc
-from data import GraphData
+from data.graphdata import GraphData
 
+# Load what is needed from data, e.g. to create dropdown options.
 data = GraphData()
 edge_weight_min = data.graph_whole.edge_weight_min
 edge_weight_max = data.graph_whole.edge_weight_max
@@ -11,7 +12,7 @@ node_screentime_max = data.graph_whole.screentime_max
 options_for_dropdown = data.get_options_for_dropdown()
 
 ## ------------------------------------------------------------------------------- ##
-## header  ##
+## Header Section  ##
 ## ------------------------------------------------------------------------------- ##
 header = html.Header(
     id="header",
@@ -19,12 +20,10 @@ header = html.Header(
     className="header",
 )
 
-
 ## ------------------------------------------------------------------------------- ##
 ## Menu Section  ##
 ## ------------------------------------------------------------------------------- ##
-
-## ------------------------------------------------------------------------------- ##
+# graph_interaction
 graph_interaction_header = html.Div(
     id="graph_interaction_header",
     children="Graph Interaction",
@@ -44,8 +43,8 @@ graph_interaction_input = dcc.Dropdown(
     className="header field_description",
 )
 
-## ------------------------------------------------------------------------------- ##
-menu_header = html.Div(
+# search_menu_header
+search_menu_header = html.Div(
     id="menu_header",
     children="Search Menu",
     className="header menu_header",
@@ -66,7 +65,7 @@ search_node_id_input = dcc.Dropdown(
     className="header field_description",
 )
 
-# expand_num_hops_header
+# expand_num_hops
 expand_num_hops_header = html.Div(
     id="expand_num_hops_header",
     children="Number of Hops",
@@ -99,7 +98,6 @@ filter_node_type_input = dcc.Dropdown(
     className="header field_description",
 )
 
-
 # filter_node_screentime
 filter_node_screentime_header = html.Div(
     id="filter_node_screentime_header",
@@ -130,22 +128,12 @@ filter_node_screentime_input = html.Div(
     className="header field_description slider_input_section",
 )
 
-
 # filter_edge_weight
 filter_edge_weight_header = html.Div(
     id="filter_edge_weight_header",
     children="Minimum Edge Weight",
     className="header field_description",
 )
-
-filter_edge_weight_input = dcc.Slider(
-    id="filter_edge_weight_input",
-    min=edge_weight_min,
-    max=edge_weight_max,
-    value=edge_weight_min,
-    className="header field_description",
-)
-
 
 filter_edge_weight_input = html.Div(
     children=[
@@ -170,7 +158,6 @@ filter_edge_weight_input = html.Div(
     className="header field_description slider_input_section",
 )
 
-
 # submit_button
 submit_button = html.Button(
     id="submit_button",
@@ -179,7 +166,6 @@ submit_button = html.Button(
     className="header field_description submit_button",
 )
 
-## ------------------------------------------------------------------------------- ##
 # search_result
 search_result_header = html.Div(
     id="search_result_header",
@@ -187,33 +173,30 @@ search_result_header = html.Div(
     className="header menu_header",
 )
 
-columns = [
-    dict(id="Field Description", name="Field Description"),
-    dict(id="Value", name="Value", type="numeric", format=Format()),
-]
-
 graph_summary_table_table = html.Div(
     children=[
         html.Div(
             dash_table.DataTable(
-                columns=columns,
+                columns=[
+                    dict(id="Field Description", name="Field Description"),
+                    dict(id="Value", name="Value", type="numeric", format=Format()),
+                ],
                 id="graph_summary_table_table",
-                style_cell={"textAlign": "left", "backgroundColor": "#BA0C2F"},
-                style_data={"color": "#FFFFFF", "backgroundColor": "#14161B"},
+                style_cell={"textAlign": "left", "backgroundColor": "#B9540C"},
+                style_data={"color": "#FCFEF0", "backgroundColor": "#331C0E"},
             ),
         )
     ],
     className="header field_description table_section",
 )
 
-## ------------------------------------------------------------------------------- ##
 # menu_section
 menu_section = html.Div(
     children=[
         graph_interaction_header,
         graph_interaction_input,
         html.Hr(className="horizontal-line"),
-        menu_header,
+        search_menu_header,
         search_node_id_header,
         search_node_id_input,
         expand_num_hops_header,
@@ -232,12 +215,9 @@ menu_section = html.Div(
     className="menu_section",
 )
 
-
 ## ------------------------------------------------------------------------------- ##
 ## Graph Section  ##
 ## ------------------------------------------------------------------------------- ##
-
-
 network_component = visdcc.Network(
     id="network_visualization",
     data={"nodes": [], "edges": []},
@@ -259,11 +239,9 @@ graph_section = html.Div(
     className="graph_section",
 )
 
-
 ## ------------------------------------------------------------------------------- ##
 ## Dashboard Section  ##
 ## ------------------------------------------------------------------------------- ##
-
 dashboard_section = html.Div(
     id="dashboard",
     children=[
@@ -276,7 +254,6 @@ dashboard_section = html.Div(
 ## ------------------------------------------------------------------------------- ##
 ## Layout  ##
 ## ------------------------------------------------------------------------------- ##
-
 layout = html.Div(
     children=[
         header,
