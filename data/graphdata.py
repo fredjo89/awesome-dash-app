@@ -7,6 +7,15 @@ from .load_data import load_got
 from config import FILE_PATH_FOR_IMAGES
 
 
+def create_portrait_image_path(node):
+    image_path = os.path.join(FILE_PATH_FOR_IMAGES, f"{node['id']}.png")
+
+    if os.path.exists(image_path):
+        return image_path
+    else:
+        return "https://e7.pngegg.com/pngimages/549/612/png-clipart-three-headed-dragon-illustration-daenerys-targaryen-tyrion-lannister-sansa-stark-house-targaryen-house-stark-throne-miscellaneous-dragon-thumbnail.png"
+
+
 @dataclass
 class GraphData:
     graph_whole: DFGraph
@@ -54,18 +63,6 @@ class GraphData:
         self.graph_filtered = copy(self.graph_whole)
         self.graph_filtered.filter_graph(self.filter_params)
 
-    def create_display_graph_from_node_neighborhood(self, node_id, n_hops):
-        """
-        Docstring...
-        """
-
-        if n_hops is None:
-            n_hops = 0
-        self.graph_display = self.graph_filtered.get_neighborhood_around_node(
-            node_id,
-            n_hops,
-        )
-
     def add_subgraph_to_displaygraph(self, input_graph: DFGraph):
         input_graph.filter_graph(self.filter_params)
         self.graph_display.append_graph(input_graph)
@@ -85,14 +82,6 @@ class GraphData:
         dict_edges = self.graph_display.edges.to_dict("records")
 
         node_coloring = {"male": "#FCFEF0", "female": "#B9540C"}
-
-        def create_portrait_image_path(node):
-            image_path = os.path.join(FILE_PATH_FOR_IMAGES, f"{node['id']}.png")
-
-            if os.path.exists(image_path):
-                return image_path
-            else:
-                return "https://e7.pngegg.com/pngimages/549/612/png-clipart-three-headed-dragon-illustration-daenerys-targaryen-tyrion-lannister-sansa-stark-house-targaryen-house-stark-throne-miscellaneous-dragon-thumbnail.png"
 
         nodes = [
             {

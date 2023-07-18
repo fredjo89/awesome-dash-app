@@ -19,6 +19,12 @@ def resolve_clicked_node(clicked_node):
         return None
 
 
+def resolve_num_hops(num_hops):
+    if num_hops is None:
+        num_hops = 0
+    return num_hops
+
+
 def create_url_from_node_name(node_name):
     node_name = node_name.replace("-", "_")
     url = f"""https://gameofthrones.fandom.com/wiki/{node_name}"""
@@ -76,6 +82,7 @@ def callback_network_visualization(app):
     ):
         triggered_id = dash.callback_context.triggered_id
         clicked_node = resolve_clicked_node(clicked_node)
+        num_hops = resolve_num_hops(num_hops)
 
         if triggered_id not in ("submit_button", "network_visualization"):
             return graph_data
@@ -86,12 +93,15 @@ def callback_network_visualization(app):
                 filter_node_types,
             )
             data.update_filter(filter_params)
-            data.create_display_graph_from_node_neighborhood(search_node_id, num_hops)
+            data.graph_display = data.graph_filtered.get_neighborhood_around_node(
+                search_node_id, num_hops
+            )
         elif triggered_id == "network_visualization":
             if interaction_value == "expand_node":
-                node_egonet = GraphData()
-                node_egonet.create_display_graph_from_node_neighborhood(clicked_node, 1)
-                data.add_subgraph_to_displaygraph(node_egonet.graph_display)
+                node_egonet = data.graph_filtered.get_neighborhood_around_node(
+                    clicked_node, 1
+                )
+                data.add_subgraph_to_displaygraph(node_egonet)
             elif interaction_value == "delete_node":
                 data.delete_node_from_display_graph(clicked_node)
 
