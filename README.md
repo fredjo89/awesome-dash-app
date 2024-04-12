@@ -1,4 +1,4 @@
-# awesome-dash-app
+# got-dash-app
 This repository was developed as an exploration into the capabilities of `dash` and `visdcc`, aimed at creating an interactive network visualization application. It contains code for a webpage with an interactive dashboard for a Game of Thrones character network, where it provides functionality to explore and analyze the connections between characters from the famous series.
 
 <figure>
